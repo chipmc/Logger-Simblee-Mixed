@@ -100,9 +100,9 @@
 #define HOURLYCOUNTOFFSET 4         // Offsets for the values in the hourly words
 #define HOURLYBATTOFFSET 6          // Where the hourly battery charge is stored
 // Finally, here are the variables I want to change often and pull them all together here
-#define DEVICENAME "Umstead"
-#define SERVICENAME "Rte70"
-#define SOFTWARERELEASENUMBER "2.0.1"
+#define DEVICENAME "Crabtree"
+#define SERVICENAME "Back"
+#define SOFTWARERELEASENUMBER "0.5.1"
 #define PARKCLOSES 19
 #define PARKOPENS 7
 
@@ -391,7 +391,7 @@ void ui()   // The function that defines the iPhone UI
                 SimbleeForMobile.updateText(ui_StartStopStatus, "Stopped");
             }
             // Prepopulate the debounce value
-            debounce = FRAMread16(DEBOUNCEADDR)*10;         // Multiply by 10 as debounce is stored in cSec
+            debounce = FRAMread8(DEBOUNCEADDR)*10;         // Multiply by 10 as debounce is stored in cSec
             SimbleeForMobile.updateValue(ui_DebounceStepper, debounce/50);
             char debounceBuffer[5];   // Should be enough for three digits and ms
             snprintf(debounceBuffer, 7, "%ims",debounce);
@@ -492,9 +492,9 @@ void ui_event(event_t &event)   // This is where we define the actions to occur 
             }
             else if (event.id == ui_UpdateButton && event.type == EVENT_RELEASE)  // A bit more complicated - Update botton event on Admin Tab
             {
-                if (FRAMread16(DEBOUNCEADDR)*10 != debounce)    // Check to see if debounce value needs to be updated (debounce stored in cSec)
+                if (FRAMread8(DEBOUNCEADDR)*10 != debounce)    // Check to see if debounce value needs to be updated (debounce stored in cSec)
                 {
-                    FRAMwrite16(DEBOUNCEADDR, debounce/10);    // If so, write to FRAM (divide by ten as debounce is stored in cSec)
+                    FRAMwrite8(DEBOUNCEADDR, debounce/10);    // If so, write to FRAM (divide by ten as debounce is stored in cSec)
                     controlRegisterValue = signalDebounceChange ^ controlRegisterValue; // Set the signal change bit
                     FRAMwrite8(CONTROLREGISTER,controlRegisterValue);    // Then set the flag so Arduino will apply new setting
                     Serial.println("Updating debounce");    // Let the console know
